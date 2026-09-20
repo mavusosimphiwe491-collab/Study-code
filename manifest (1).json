@@ -1,0 +1,16 @@
+{
+  "background_color": "#721414",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Study group",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Studygroup",
+  "start_url": "/",
+  "theme_color": "#2400ff",
+  "id": "Study-group-app",
+  "description": "J",
+  "categories": [
+    "education"
+  ]
+}
