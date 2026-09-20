@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Group</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0078D4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#f5f7fb;height:100vh;display:flex;flex-direction:column}
+.header{background:#0078D4;color:white;padding:16px;display:flex;align-items:center;gap:12px}
+.header h1{font-size:18px}
+.main{flex:1;display:flex;overflow:hidden}
+.sidebar{width:260px;background:white;border-right:1px solid #e5e7eb;padding:12px;display:flex;flex-direction:column;gap:8px}
+.group{padding:12px;border-radius:10px;cursor:pointer;background:#f3f4f6}
+.group.active{background:#0078D4;color:white}
+.chat{flex:1;display:flex;flex-direction:column;background:white}
+.messages{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.msg{padding:10px 14px;border-radius:18px;max-width:75%;font-size:14px}
+.msg.me{background:#0078D4;color:white;align-self:flex-end}
+.msg.other{background:#f3f4f6;align-self:flex-start}
+.input{display:flex;padding:12px;border-top:1px solid #e5e7eb;gap:8px}
+.input input{flex:1;padding:12px;border-radius:24px;border:1px solid #e5e7eb;outline:none}
+.input button{background:#0078D4;color:white;border:none;padding:0 20px;border-radius:24px;font-weight:600}
+@media(max-width:600px){.sidebar{width:80px}.sidebar span{display:none}}
+</style>
+</head>
+<body>
+<div class="header">
+<div style="width:36px;height:36px;background:white;border-radius:8px;display:grid;place-items:center">📚</div>
+<h1>Study Group</h1>
+</div>
+<div class="main">
+<div class="sidebar" id="sidebar">
+<div class="group active" onclick="switchGroup(this,'General')"><span>📖 General</span></div>
+<div class="group" onclick="switchGroup(this,'Math')"><span>📐 Math</span></div>
+<div class="group" onclick="switchGroup(this,'Science')"><span>🔬 Science</span></div>
+<div class="group" onclick="switchGroup(this,'Exam Prep')"><span>🎯 Exam Prep</span></div>
+</div>
+<div class="chat">
+<div class="messages" id="messages">
+<div class="msg other">Welcome to Study Group! Ask anything to start collaborating 👩‍🎓</div>
+</div>
+<div class="input">
+<input id="input" placeholder="Type a message..." onkeypress="if(event.key==='Enter')send()">
+<button onclick="send()">Send</button>
+</div>
+</div>
+</div>
+<script>
+// PWA Install
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+let currentGroup = 'General';
+function switchGroup(el,name){
+  document.querySelectorAll('.group').forEach(g=>g.classList.remove('active'));
+  el.classList.add('active');
+  currentGroup=name;
+  addMsg('Switched to '+name,'other');
+}
+function addMsg(text,type){
+  const m=document.createElement('div');
+  m.className='msg '+type;
+  m.textContent=text;
+  document.getElementById('messages').appendChild(m);
+  document.getElementById('messages').scrollTop=99999;
+}
+function send(){
+  const inp=document.getElementById('input');
+  if(!inp.value.trim())return;
+  addMsg(inp.value,'me');
+  const q=inp.value;
+  inp.value='';
+  setTimeout(()=>{ addMsg('Got it! For '+currentGroup+': Let\'s discuss "'+q+'" together. Share your notes?', 'other'); },800);
+}
+</script>
+</body>
+</html>
